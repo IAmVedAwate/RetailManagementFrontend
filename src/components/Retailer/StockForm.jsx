@@ -56,6 +56,8 @@ function StockForm({ id, proId, disabled, indexPage, onActionComplete }) {
 
   const handleEdit = async (editId) => {
     try {
+      console.log(stockData);
+      
       await handlePutSubmit(`api/Warehouse/${editId}`, stockData, 'application/json',"Warehouse");
       if (onActionComplete) onActionComplete(); // This triggers a re-fetch in WarehouseIndex
     } catch (error) {

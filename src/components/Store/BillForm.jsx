@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import OrderForm from './OrderForm'
 import { useDispatch, useSelector } from 'react-redux';
 import { handleGetSubmit } from '../../services/Services';
@@ -9,14 +9,18 @@ import { setWarehouse } from '../../store/WarehouseSlice';
 import axios from 'axios';
 import { BillContext } from '../../context/BillContext';
 
-function BillForm({bill_id, bill_name}) {
+function BillForm() {
+    const location = useLocation();
+    const { bill_id, bill_name, bill_index, bill_total } = location.state || {};
     const { fetchBillsAgain } = useContext(BillContext);
+    console.log(location.state)
     
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedSubcategory, setSelectedSubcategory] = useState(null);
     const [billName, setBillName] = useState(bill_name);
+    const [billIndex, setBillIndex] = useState(bill_index)
     const [billId, setBillId] = useState(bill_id);
-    const [billTotal, setBillTotal] = useState(0);
+    const [billTotal, setBillTotal] = useState(bill_total ? bill_total: 0);
 
     const dispatch = useDispatch();
     const warehouse = useSelector((state) => state.warehouse.warehouse);
@@ -77,7 +81,7 @@ function BillForm({bill_id, bill_name}) {
 
     const handleAddOrder = async (order) => {
         if (!billId) {
-            // Validate bill name on first add.
+            console.warn("Entered Into ADD");
             if (!billName) {
                 alert("Please provide a bill name.");
                 return;
@@ -93,6 +97,7 @@ function BillForm({bill_id, bill_name}) {
                 billName: billName.trim()
             };
             try {
+                console.warn(payload);
                 const response = await axios.post(
                     `https://localhost:44374/api/Bill`,
                     JSON.stringify(payload),
@@ -105,11 +110,13 @@ function BillForm({bill_id, bill_name}) {
                 );
                 
                 if (response.data.isSuccess) {
-                    setBillTotal(response.data.result[0].total);
+                    setBillTotal(response.data.result[0].totalAmount);
                     setBillId(response.data.result[0].billId); // [CHANGE] Save the created bill's ID.
+                    setBillIndex(response.data.result[0].billIndex)
+                    console.log(`billId: ${response.data.result[0].billId}, billTotal: ${response.data.result[0].totalAmount}`)
                     fetchBillsAgain();
-                    alert(`Bill Created successfully! : ${response.data.result[0].orderId}`);
-                    return response.data.result[0].orderId;
+                    alert(`Bill Created successfully! : ${response.data.result[0].id}`);
+                    return response.data.result[0].id;
                 } else {
                     alert(`Failed to Create Bill.`);
                 }
@@ -118,6 +125,7 @@ function BillForm({bill_id, bill_name}) {
                 console.error("Error creating bill:", error);
             }
         } else {
+            console.warn("Entered Into Update");
             const payload = {
                 billId: billId, // pass billId along with stockId
                 stockId: order.stockId,
@@ -125,7 +133,8 @@ function BillForm({bill_id, bill_name}) {
                 totalAmount: order.totalAmount
             };
             const orderIdParam = await order.orderId || 0;
-            console.error(order.orderId);
+            console.log(orderIdParam);
+            console.log(payload);
             try {
                 const response = await axios.put(
                     `https://localhost:44374/api/Bill/Order/${orderIdParam}`,
@@ -138,13 +147,14 @@ function BillForm({bill_id, bill_name}) {
                     }
                 );
         
-                console.log(response.data);
                 if (response.data.isSuccess) {
-                    setBillTotal(response.data.result[0].total);
-                    alert(`Bill Created successfully! : ${response.data.result[0].orderId}`);
-                    return response.data.result[0].orderId;
+                    console.log(response.data.result);
+                    setBillTotal(response.data.result.bill.totalAmount);
+                    alert(`Bill Updating successfully! : ${response.data.result.id}`);
+                    return response.data.result.id;
                 } else {
-                    alert(`Failed to Create Bill.`);
+                    alert(`Failed to Update Bill.`);
+                    console.error(response.data);
                 }
             } catch (error) {
                 console.error("Error updating bill:", error);
@@ -201,7 +211,7 @@ function BillForm({bill_id, bill_name}) {
                                 </>
                             )}
                             <div className="card-footer text-center">
-                                <Link to={"/bill/confirmation"} className='btn btn-success' style={{ padding: "20px" }}>
+                                <Link to={`/bill/confirm/${billIndex}`} className='btn btn-success' style={{ padding: "20px" }}>
                                     Confirm Your Bill Here
                                 </Link>
                             </div>
@@ -235,6 +245,7 @@ function BillForm({bill_id, bill_name}) {
                                     {aggregatedProducts.map((entity) => (
                                         <OrderForm
                                             key={entity.product.id}
+                                            bill_index={billIndex}
                                             productEntity={entity}
                                             onAddOrder={handleAddOrder}
                                             changeTotal={setBillTotal}

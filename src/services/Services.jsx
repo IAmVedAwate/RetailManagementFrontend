@@ -21,7 +21,7 @@ const handleGetSubmit = async (url, msgFor) => {
     console.log("GET is Running Perfectly!");
     try {
         const response = await axios.get(`https://localhost:44374/${url}`, {
-            withCredentials: true,
+            // withCredentials: true,
             headers: {
                 Authorization: localStorage.getItem("token"),
             }
@@ -99,7 +99,7 @@ const handlePutSubmit = async (url, data, submitType, msgFor) => {
 const handleDeleteSubmit = async (url, msgFor) => {
     try {
         const response = await axios.delete(`https://localhost:44374/${url}`, {
-            withCredentials: true,
+            // withCredentials: true,
             headers: {
                 Authorization: localStorage.getItem("token"),
             }

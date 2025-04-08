@@ -1,20 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { handleDeleteSubmit } from '../../services/Services';
+import { handleDeleteSubmit, handleGetSubmit } from '../../services/Services';
+import { setBills } from '../../store/BillSlice';
 
 
 
-function OrderForm({ productEntity , onAddOrder, changeTotal, quantityTemp, confirmPage, directOrderId, onDeleteOrder }) {
+function OrderForm({ bill_index, productEntity , onAddOrder, changeTotal, quantityTemp, confirmPage, directOrderId, onDeleteOrder }) {
     const dispatch = useDispatch();
     const [orderId, setOrderId] = useState(null);
-    
+    const bills = useSelector((state) => state.bills.bills);
     const [orderData, setOrderData] = useState({
         productId: productEntity.product.id,
         quantity: quantityTemp ? quantityTemp: 1,
         price: productEntity.product.retailPrice,
     });
     const [error, setError] = useState('');
+    useEffect(() => {
+        const fetchBills = async (e) => {
+            try {
+                if(bill_index){
+                    const response = await handleGetSubmit(`api/Bill/Order?index=${bill_index}`, "Bill");
+                    if (response.data.isSuccess) {
+                        dispatch(setBills(response.data.result));
+                        const order = response.data.result.find((bill) => bill.stock.productId === productEntity.productId);
+                        if(order || order?.id) setOrderData({
+                            ...orderData,
+                            quantity: order.quantity,
+                            
+                        });
+                        setOrderId(order?.id)
+                        console.log(order);
+                        console.log(productEntity);
+                    }
+                }
+            } catch (error) {
+                console.error("An error occurred while fetching subcategories:", error.message);
+            }
+        };
 
+        fetchBills();
+        
+    }, []);
+    
+        
+
+    
+    
     const incrementQuantity = () => {
         if (orderData.quantity < productEntity.quantity) {
             setOrderData((prev) => ({
@@ -117,7 +148,7 @@ function OrderForm({ productEntity , onAddOrder, changeTotal, quantityTemp, conf
                             let output = onAddOrder(order); // [CHANGE] Call parent handler to add order.
                             output.then(value => {
                                 setOrderId(value);
-                                console.log(orderId); // Logs the extracted number
+                                console.log(value); // Logs the extracted number
                             });
                             
                             

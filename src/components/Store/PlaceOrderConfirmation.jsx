@@ -51,7 +51,6 @@ const PlaceOrderConfirmation = () => {
     e.preventDefault();
     try {
       await handlePostSubmit(`api/Delivery`, orderPlaceData, "application/json", "Order Place");
-      // You might want to navigate or give feedback after success
       console.log(orderPlaceData);
       
       navigate("/home/index");

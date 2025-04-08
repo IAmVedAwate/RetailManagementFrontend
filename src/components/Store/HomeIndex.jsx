@@ -11,16 +11,16 @@ function HomeIndex() {
 
     
     useEffect(() => {
-        const fetchProducts = async (subCatId) => {
+        const fetchProducts = async () => {
             try {
-                const response = await handleGetSubmit(`api/admin/Product/${subCatId}`, "Product");            
+                const response = await handleGetSubmit(`api/admin/Product/random`, "Product");            
                 
                 if (response.data.isSuccess) dispatch(setProducts(response.data.result));
             } catch (error) {
                 console.error("An error occurred while fetching Products:", error.message);
             }
         };
-        fetchProducts(16);
+        fetchProducts();
     }, [dispatch]);
 
     return (

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { setBills } from "../../store/BillSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { handleDeleteSubmit, handleGetSubmit } from "../../services/Services";
@@ -51,9 +51,9 @@ const BillConfirmation = () => {
       );
 
       if (response.data.isSuccess) {
-        setBillTotal(response.data.result[0].total);
-        alert(`Bill Updated successfully! : ${response.data.result[0].orderId}`);
-        return response.data.result[0].orderId;
+        setBillTotal(response.data.result.bill.totalAmount);
+        alert(`Bill Updated successfully! : ${response.data.result.id}`);
+        return response.data.result.id;
       } else {
         alert(`Failed to Create Bill.`);
       }
@@ -90,7 +90,7 @@ const BillConfirmation = () => {
               <div className="col-12">
                 {bill ? bill.map(order => (
                   <OrderForm
-                    key={order.stock.product.id}
+                    key={order.stock.productId}
                     productEntity={order.stock}
                     onAddOrder={handleAddOrder}
                     changeTotal={setBillTotal}
@@ -145,13 +145,14 @@ const BillConfirmation = () => {
                   >
                     Delete Bill
                   </a>
-                  <a
-                    href="#"
+                  <Link
                     className="btn btn-success btn-sm w-100 py-2 rounded-3"
                     style={{ marginRight: "10px" }}
+                    to="/bill/create"
+                    state={{ bill_id: billId, bill_name: billName, bill_index: billIndex, bill_total: billTotal }}
                   >
                     Edit Bill
-                  </a>
+                  </Link>
                   <div
                     className="mx-5"
                   >
