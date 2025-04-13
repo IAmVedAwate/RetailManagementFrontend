@@ -211,7 +211,7 @@ function BillForm() {
                                 </>
                             )}
                             <div className="card-footer text-center">
-                                <Link to={`/bill/confirm/${billIndex}`} className='btn btn-success' style={{ padding: "20px" }}>
+                                <Link to={billIndex ? `/bill/confirm/${billIndex}`: ``} className='btn btn-success' style={{ padding: "20px" }}>
                                     Confirm Your Bill Here
                                 </Link>
                             </div>
@@ -242,7 +242,7 @@ function BillForm() {
                         <div className="row g-3" style={{ overflowY: "auto", height: "75vh" }}>
                             {selectedSubcategory && (
                                 <>
-                                    {aggregatedProducts.map((entity) => (
+                                    {warehouse.map((entity) => (
                                         <OrderForm
                                             key={entity.product.id}
                                             bill_index={billIndex}

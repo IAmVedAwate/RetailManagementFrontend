@@ -121,7 +121,7 @@ function RouteManager() {
            <Route path="/delivery/index" element={
         <DeliveryOrderList/>
         } />
-        <Route path="/delivery/details" element={
+        <Route path="/delivery/details/:deliveryId" element={
         <DeliveryOrderDetail/>
         } />
       {/* <Route path="/login" element={<Login />} />

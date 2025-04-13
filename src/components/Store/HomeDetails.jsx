@@ -11,7 +11,7 @@ function HomeDetails() {
   // Fetch product details by prodId
   useEffect(() => {
     const fetchProduct = async () => {
-      const response = await handleGetSubmit(`api/admin/productById/${prodId}`, "Product");
+      const response = await handleGetSubmit(`api/admin/Product/productById/${prodId}`, "Product");
       setProduct(response.data.result);
     };
     fetchProduct();
@@ -28,7 +28,7 @@ function HomeDetails() {
           // Fetch each recommended product's details concurrently
           const recProducts = await Promise.all(
             recommendedIds.map(async (id) => {
-              const res = await handleGetSubmit(`api/admin/productById/${id}`, "Product");
+              const res = await handleGetSubmit(`api/admin/Product/productById/${id}`, "Product");
               return res.data.result;
             })
           );

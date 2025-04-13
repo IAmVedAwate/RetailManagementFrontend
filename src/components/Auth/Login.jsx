@@ -1,11 +1,13 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setRole, setToken } from "../../store/AuthSlice";
 import { useNavigate } from "react-router-dom";
+import { BillContext } from "../../context/BillContext";
 
 const Login = () => {
+  const { fetchBillsAgain } = useContext(BillContext);
 
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
@@ -36,6 +38,7 @@ const Login = () => {
         dispatch(setRole(role));
         localStorage.setItem("token",`Bearer ${token}`);
         localStorage.setItem("role",`${role}`);
+        fetchBillsAgain();
         navigate("/home/index");
       } else {
         console.error("Login failed:", errorMessages || "Unknown error occurred");
