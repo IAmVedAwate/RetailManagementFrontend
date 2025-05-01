@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { handleGetSubmit, handlePostSubmit } from "../../services/Services";
+import axios from "axios";
 
 const DeliveryComplete = () => {
   const { deliveryId } = useParams();
@@ -19,12 +20,29 @@ const DeliveryComplete = () => {
   }, []);
 
   const handleCompleteDelivery = async () => {
-    const response = await handlePostSubmit(`api/Delivery/Complete/${deliveryId}`, null, "application/json", "Delivery Completion");
-    if (response?.data?.statusCode === 200) {
-      alert("Delivery marked as complete!");
-      navigate("/delivery/list");
-    } else {
-      alert(response?.data?.errorMessages || "Failed to complete delivery");
+      try {
+
+        const response = await axios.patch(
+            `https://localhost:44374/api/Delivery/Complete/${deliveryId}`,
+            null,
+            {
+                headers: {
+                    Authorization: localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+
+        console.log(response.data);
+        if (response.data.isSuccess) {
+            alert(`Delivery marked as complete!`);
+            navigate(-1);
+        } else {
+            alert(`Failed to Delivery Completion.`);
+        }
+    } catch (error) {
+        console.error(`Error during Delivery Completion:`, error);
+        alert(`Failed to Complete Delivery.`);
     }
   };
 
@@ -36,7 +54,7 @@ const DeliveryComplete = () => {
             <h1>Delivery Confirmation</h1>
           </div>
           <div className="col-6 text-end">
-            <Link to="/delivery/index" className="btn btn-secondary">Back to List</Link>
+            <button className="btn btn-secondary" onClick={()=>navigate(-1)}>Back to List</button>
           </div>
         </div>
       </div>

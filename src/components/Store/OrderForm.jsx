@@ -97,8 +97,8 @@ function OrderForm({ bill_index, productEntity , onAddOrder, changeTotal, quanti
                     <div className="col-md-2 p-3">
                         <p className="mb-1"><strong>{productEntity.product.productName}</strong></p>
                         <p className='mb-1'><small>Category: {productEntity.product.subCategory?.subCategoryName}</small></p>
-                        <p className="text-muted mb-1">Available: {productEntity.quantity}</p>
-                        <p className='mb-1'><small>By: <b>{productEntity.warehouse.warehouseName}</b></small></p>
+                        <p className="text-muted mb-1">Available: {productEntity?.quantity}</p>
+                        <p className='mb-1'><small>By: <b>{productEntity.warehouse?.warehouseName}</b></small></p>
                     </div>
                     <div className="col-3">
                         <div className="d-flex align-items-center">

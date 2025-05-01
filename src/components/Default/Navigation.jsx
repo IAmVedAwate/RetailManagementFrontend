@@ -128,10 +128,15 @@ function Navigation() {
                         </Link>
                       </li>
                       <li>
-                        <Link to={"/delivery/details"} className="dropdown-item text-dark">
+                        <Link to={"/delivery/accepted"} className="dropdown-item text-dark">
                           Accepted Delivery
                         </Link>
                       </li>
+                      <li>
+                        <Link to={"/return/create"} className="dropdown-item text-dark">
+                          Create Return
+                        </Link>
+                       </li> 
                     </ul>
                   </li>
                 </>

@@ -30,6 +30,8 @@ import ProductEdit from './components/Admin/ProductEdit';
 import ProductCreate from './components/Admin/ProductCreate';
 import DeliveryOrderDetail from './components/Delivery/DeliveryOrderDetail';
 import BillListInNav from './components/Store/BillListInNav';
+import ReturnCreate from './components/Delivery/ReturnCreate';
+import MyDeliveries from './components/Delivery/MyDeliveries';
 function RouteManager() {
   
   return (
@@ -120,6 +122,12 @@ function RouteManager() {
         } />
            <Route path="/delivery/index" element={
         <DeliveryOrderList/>
+        } />
+        <Route path="/return/create/:orderid" element={
+        <ReturnCreate/>
+        } />
+        <Route path="/delivery/accepted" element={
+        <MyDeliveries/>
         } />
         <Route path="/delivery/details/:deliveryId" element={
         <DeliveryOrderDetail/>
