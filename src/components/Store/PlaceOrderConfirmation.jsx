@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { setBills } from "../../store/BillSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { handleGetSubmit, handleInputChange, handlePostSubmit } from "../../services/Services";
+import { BillContext } from "../../context/BillContext";
 
 const PlaceOrderConfirmation = () => {
   const { billIndex } = useParams();
@@ -10,7 +11,7 @@ const PlaceOrderConfirmation = () => {
   const bill = useSelector((state) => state.bills.bills);
   const navigate = useNavigate();
   const [billTotal, setBillTotal] = useState(null);
-
+  const { fetchBillsAgain } = useContext(BillContext);
   const [orderPlaceData, setOrderPlaceData] = useState({
     billIndex: billIndex,
     phone2: "",
@@ -52,7 +53,7 @@ const PlaceOrderConfirmation = () => {
     try {
       await handlePostSubmit(`api/Delivery`, orderPlaceData, "application/json", "Order Place");
       console.log(orderPlaceData);
-      
+      fetchBillsAgain(localStorage.getItem("role"));
       navigate("/home/index");
     } catch (error) {
       console.error("Error placing order:", error.message);

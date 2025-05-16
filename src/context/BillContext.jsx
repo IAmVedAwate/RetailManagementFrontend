@@ -7,13 +7,20 @@ export const BillContext = createContext();
 export function BillProvider({ children }) {
   const [bills, setBills] = useState([]);
 
-  const fetchBillsAgain = async () => {
-    const response = await handleGetSubmit(`api/Bill`, "Bill");
-    setBills(response.data.result);
+  // Get role from localStorage
+  
+
+  const fetchBillsAgain = async (role) => {
+    if (role === "store") {
+      const response = await handleGetSubmit(`api/Bill`, "Bill");
+      setBills(response.data.result);
+    }
   };
 
   useEffect(() => {
-    fetchBillsAgain();
+    const role = localStorage.getItem('role');
+    fetchBillsAgain(role);
+    // eslint-disable-next-line
   }, []);
 
   return (

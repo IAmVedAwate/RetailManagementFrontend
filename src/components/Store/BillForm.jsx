@@ -114,7 +114,7 @@ function BillForm() {
                     setBillId(response.data.result[0].billId); // [CHANGE] Save the created bill's ID.
                     setBillIndex(response.data.result[0].billIndex)
                     console.log(`billId: ${response.data.result[0].billId}, billTotal: ${response.data.result[0].totalAmount}`)
-                    fetchBillsAgain();
+                    fetchBillsAgain(localStorage.getItem('role'));
                     alert(`Bill Created successfully! : ${response.data.result[0].id}`);
                     return response.data.result[0].id;
                 } else {

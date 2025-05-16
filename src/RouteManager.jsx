@@ -32,6 +32,10 @@ import DeliveryOrderDetail from './components/Delivery/DeliveryOrderDetail';
 import BillListInNav from './components/Store/BillListInNav';
 import ReturnCreate from './components/Delivery/ReturnCreate';
 import MyDeliveries from './components/Delivery/MyDeliveries';
+import ReturnIndex from './components/Delivery/ReturnIndex';
+import AllReturns from './components/Retailer/AllReturns';
+import OrderHistory from './components/Retailer/OrderHistory';
+import MsgForRetailer from './components/Retailer/MsgForRetailer';
 function RouteManager() {
   
   return (
@@ -98,7 +102,6 @@ function RouteManager() {
         <Route path="/" element={
         <HomeIndex/>
         } />
-        
             <Route path="/login" element={
         <Login/>
         } />
@@ -110,6 +113,15 @@ function RouteManager() {
         } />
            <Route path="/warehouse/edit" element={
         <WarehouseForm/>
+        } />
+           <Route path="/warehouse/returns" element={
+        <AllReturns/>
+        } />
+        <Route path="/warehouse/history" element={
+        <OrderHistory/>
+        } />
+        <Route path="/warehouse/msgs" element={
+        <MsgForRetailer/>
         } />
           <Route path="/bill/create" element={
         <BillForm/>
@@ -125,6 +137,9 @@ function RouteManager() {
         } />
         <Route path="/return/create/:orderid" element={
         <ReturnCreate/>
+        } />
+        <Route path="/return/index" element={
+        <ReturnIndex/>
         } />
         <Route path="/delivery/accepted" element={
         <MyDeliveries/>

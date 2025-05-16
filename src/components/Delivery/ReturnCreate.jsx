@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { handleInputChange, handleFileChange, handlePostSubmit } from '../../services/Services';
+import { handleInputChange, handleFileChange, handlePostSubmit, handleGetSubmit } from '../../services/Services';
 
 function ReturnCreate() {
-    const {orderid} = useParams();
+  const { orderid } = useParams();
   const navigate = useNavigate();
   const [returnData, setReturnData] = useState({
     orderId: orderid,
@@ -14,6 +14,26 @@ function ReturnCreate() {
     returnMethod: 'Refund',
     photoEvidence: null,
   });
+
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await handleGetSubmit(`api/Bill/Order/Return/${orderid}`);
+        if (response?.data) {
+          setReturnData((prevData) => ({
+            ...prevData,
+            orderId: response.data.result.id ?? orderid,
+            refundAmmount: response.data.result.totalAmount ?? 0,
+          }));
+          console.log('Order details fetched successfully:', response.data.result);
+        }
+      } catch (error) {
+        console.error('Error fetching order details:', error);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderid]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,33 +53,11 @@ function ReturnCreate() {
         'multipart/form-data',
         'Return'
       );
-      navigate('/returns');
+      navigate('/');
     } catch (error) {
       console.error('Error submitting return:', error);
     }
   };
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const response = await fetch(`api/Delivery/Orders/${orderid}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setReturnData((prevData) => ({
-          ...prevData,
-          refundAmmount: data.totalAmount,
-        }));
-      } catch (error) {
-        console.error('Error fetching order details:', error);
-      }
-    };
-
-    fetchOrderDetails();
-  
-    
-  }, [])
-  
 
   return (
     <div className="container">
@@ -69,8 +67,6 @@ function ReturnCreate() {
         </div>
         <div className="card-body p-4 bg-secondary">
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="row">
-            
-
             <div className="col-12 mb-3">
               <div className="form-floating">
                 <input
@@ -86,36 +82,6 @@ function ReturnCreate() {
               </div>
             </div>
 
-            <div className="col-md-6 mb-3">
-              <div className="form-floating">
-                <select
-                  name="returnStatus"
-                  className="form-select"
-                  value={returnData.returnStatus}
-                  onChange={(e) => handleInputChange(e, setReturnData)}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-                <label>Status</label>
-              </div>
-            </div>
-
-            <div className="col-md-6 mb-3">
-              <div className="form-floating">
-                <select
-                  name="returnMethod"
-                  className="form-select"
-                  value={returnData.returnMethod}
-                  onChange={(e) => handleInputChange(e, setReturnData)}
-                >
-                  <option value="Refund">Refund</option>
-                  <option value="Replacement">Replacement</option>
-                </select>
-                <label>Return Method</label>
-              </div>
-            </div>
             <div className="col-12 mb-3">
               <div className="form-floating">
                 <input
@@ -127,7 +93,7 @@ function ReturnCreate() {
                   onChange={(e) => handleInputChange(e, setReturnData)}
                   required
                 />
-                <label>Refundable Ammount</label>
+                <label>Refundable Amount</label>
               </div>
             </div>
             <div className="col-12 mb-3">

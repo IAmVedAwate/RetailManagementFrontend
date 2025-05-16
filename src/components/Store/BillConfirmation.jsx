@@ -19,10 +19,16 @@ const BillConfirmation = () => {
 
   const fetchBills = async () => {
     const response = await handleGetSubmit(`api/Bill/Order?index=${billIndex}`, "Orders From Bill");
-    dispatch(setBills(response.data.result));
-    setBillName(response.data.result[0]?.bill.billName);
-    setBillId(response.data.result[0]?.bill.id);
-    setBillTotal(response.data.result[0]?.bill.totalAmount);
+    if (response?.data?.result) {
+      dispatch(setBills(response?.data.result));
+      setBillName(response?.data.result[0]?.bill.billName);
+      setBillId(response?.data.result[0]?.bill.id);
+      setBillTotal(response?.data.result[0]?.bill.totalAmount);
+    }else{
+      fetchBillsAgain(localStorage.getItem("role"));
+      navigate("/");
+    }
+    
   };
 
   useEffect(() => {
@@ -137,7 +143,7 @@ const BillConfirmation = () => {
                     onClick={async(e)=>{
                       e.preventDefault();
                       await handleDeleteSubmit(`api/Bill/${billId}`,"Bill");
-                      fetchBillsAgain();
+                      fetchBillsAgain(localStorage.getItem("role"));
                       navigate("/")
                     }}
                     className="btn btn-danger border-0 bg-gradient w-100 py-2 rounded-3"

@@ -38,7 +38,7 @@ const Login = () => {
         dispatch(setRole(role));
         localStorage.setItem("token",`Bearer ${token}`);
         localStorage.setItem("role",`${role}`);
-        fetchBillsAgain();
+        fetchBillsAgain(role);
         navigate("/home/index");
       } else {
         console.error("Login failed:", errorMessages || "Unknown error occurred");

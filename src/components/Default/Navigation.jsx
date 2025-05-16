@@ -108,6 +108,21 @@ function Navigation() {
                       Edit Warehouse
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link to={"/warehouse/returns"} className="nav-link text-dark">
+                      Warehouse Returns
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/warehouse/history"} className="nav-link text-dark">
+                      Warehouse History
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/warehouse/msgs"} className="nav-link text-dark">
+                      Messages
+                    </Link>
+                  </li>
                 </>
               )}
 
@@ -133,8 +148,8 @@ function Navigation() {
                         </Link>
                       </li>
                       <li>
-                        <Link to={"/return/create"} className="dropdown-item text-dark">
-                          Create Return
+                        <Link to={"/return/index"} className="dropdown-item text-dark">
+                          Manage Returns
                         </Link>
                        </li> 
                     </ul>

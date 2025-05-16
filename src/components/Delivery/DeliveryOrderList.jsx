@@ -48,7 +48,7 @@ const DeliveryOrderList = () => {
           </div>
         </div>
         <div className="card-body bg-white p-4">
-          <DeliveryOrder orders={orders} handleAccept={handleAccept} fetchDeliveryOrders={fetchDeliveryOrders}/>
+          <DeliveryOrder onlyShow={true} orders={orders} handleAccept={handleAccept} fetchDeliveryOrders={fetchDeliveryOrders}/>
         </div>
       </div>
     );
