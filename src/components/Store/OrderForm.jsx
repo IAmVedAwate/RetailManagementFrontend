@@ -83,6 +83,9 @@ function OrderForm({ bill_index, productEntity , onAddOrder, changeTotal, quanti
     };
 
     return (
+        <>
+        { productEntity?.quantity > 0 ? 
+        <>
         <div className="col-12">
             <div className="card shadow-sm bg-secondary">
                 <div className="row g-0 align-items-center">
@@ -175,6 +178,8 @@ function OrderForm({ bill_index, productEntity , onAddOrder, changeTotal, quanti
                 </div>
             </div>
         </div>
+        </>: <></>}
+        </>
     )
 }
 

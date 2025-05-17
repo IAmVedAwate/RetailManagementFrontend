@@ -4,8 +4,10 @@ import axios from "axios";
 import StoreUserForm from '../Store/StoreUserForm';
 import RetailerUserForm from '../Retailer/RetailerUserForm';
 import DeliveryUserForm from '../Delivery/DeliveryUserForm';
+import FloatingAdvertisement from '../Default/FloatingAdvertisement';
 const CreateAccount = () => {
   const [roleForForm, setRoleForForm] = useState(null);
+  const [showAd, setShowAd] = useState(true);
 
   const [formData, setFormData] = useState({
     role: "",
@@ -82,6 +84,8 @@ const CreateAccount = () => {
 
   return (
     <>
+    <FloatingAdvertisement show={showAd} onClose={() => setShowAd(false)} adLocation="Login / Signup" />
+
     <div className="container mt-5 d-flex align-items-center justify-content-center">
       <div className="row w-100 shadow-lg rounded-top-3 overflow-hidden">
         {/* Left Section with Image and Overlay */}

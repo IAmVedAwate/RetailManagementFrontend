@@ -8,10 +8,13 @@ import { setCategories } from '../../store/CategorySlice';
 import { setWarehouse } from '../../store/WarehouseSlice';
 import axios from 'axios';
 import { BillContext } from '../../context/BillContext';
+import FloatingAdvertisement from '../Default/FloatingAdvertisement';
 
 function BillForm() {
     const location = useLocation();
     const { bill_id, bill_name, bill_index, bill_total } = location.state || {};
+    const [showAd, setShowAd] = useState(true);
+
     const { fetchBillsAgain } = useContext(BillContext);
     console.log(location.state)
     
@@ -21,6 +24,7 @@ function BillForm() {
     const [billIndex, setBillIndex] = useState(bill_index)
     const [billId, setBillId] = useState(bill_id);
     const [billTotal, setBillTotal] = useState(bill_total ? bill_total: 0);
+    const [associations, setAssociations] = useState([]);
 
     const dispatch = useDispatch();
     const warehouse = useSelector((state) => state.warehouse.warehouse);
@@ -63,6 +67,27 @@ function BillForm() {
 
         fetchCategories();
     }, [dispatch]);
+
+    // Fetch associations when subcategory changes
+    useEffect(() => {
+        const fetchAssociations = async () => {
+            if (selectedSubcategory) {
+                try {
+                    const res = await axios.get(`http://127.0.0.1:8000/association/${encodeURIComponent(selectedSubcategory.subCategoryName)}`);
+                    if (res.data && Array.isArray(res.data.associations)) {
+                        setAssociations(res.data.associations);
+                    } else {
+                        setAssociations([]);
+                    }
+                } catch (err) {
+                    setAssociations([]);
+                }
+            } else {
+                setAssociations([]);
+            }
+        };
+        fetchAssociations();
+    }, [selectedSubcategory]);
 
     // Aggregate products across warehouses by product id
     const aggregatedProducts = selectedSubcategory ? Object.values(
@@ -164,6 +189,8 @@ function BillForm() {
 
     return (
         <>
+            <FloatingAdvertisement show={showAd} onClose={() => setShowAd(false)} adLocation="Bill / Retailer" />
+
             <div className="container-fluid mt-4">
                 <div className="row">
                     <div className="col-md-3 mb-2">
@@ -175,7 +202,12 @@ function BillForm() {
                                         <li
                                             key={category.id}
                                             style={{ cursor: "pointer" }}
-                                            className="list-group-item"
+                                            className={
+                                                "list-group-item" +
+                                                (selectedCategory && selectedCategory.id === category.id
+                                                    ? " bg-info bg-opacity-25 fw-bold"
+                                                    : "")
+                                            }
                                             onClick={() => {
                                                 setSelectedCategory(category);
                                                 setSelectedSubcategory(null); // Reset subcategory
@@ -191,13 +223,19 @@ function BillForm() {
                                     <div className="card-header text-center fw-bold">SubCategories</div>
                                     <div className="card-body p-0" style={{ overflowY: "auto", height: "40%" }}>
                                         <ul className="list-group">
-                                            {subCategories.filter((subcat) => subcat.category.id == selectedCategory.id)
+                                            {subCategories
+                                                .filter((subcat) => subcat.category.id == selectedCategory.id)
                                                 .flatMap((subcat) => subcat || [])
                                                 .map((subcategory) => (
                                                     <li
                                                         key={subcategory.id}
                                                         style={{ cursor: "pointer" }}
-                                                        className="list-group-item"
+                                                        className={
+                                                            "list-group-item" +
+                                                            (selectedSubcategory && selectedSubcategory.id === subcategory.id
+                                                                ? " bg-info bg-opacity-25 fw-bold"
+                                                                : "")
+                                                        }
                                                         onClick={() => {
                                                             setSelectedSubcategory(subcategory);
                                                             fetchProducts(subcategory.id);
@@ -239,6 +277,17 @@ function BillForm() {
                                 <button className="btn btn-secondary">Filters <i className="bi bi-funnel"></i></button>
                             </div>
                         </div>
+                        {/* Association Mining Suggestions */}
+                        {associations.length > 0 && (
+                            <div className="mb-3">
+                                <span className="fw-bold me-2">Try these also:</span>
+                                {associations.map((assoc, idx) => (
+                                    <span key={idx} className="badge rounded-pill bg-info text-dark me-2 mb-1" style={{ fontSize: "1rem" }}>
+                                        {assoc}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                         <div className="row g-3" style={{ overflowY: "auto", height: "75vh" }}>
                             {selectedSubcategory && (
                                 <>
@@ -263,4 +312,4 @@ function BillForm() {
     )
 }
 
-export default BillForm
+export default BillForm;

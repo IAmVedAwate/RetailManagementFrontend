@@ -5,9 +5,11 @@ import { useDispatch } from "react-redux";
 import { setRole, setToken } from "../../store/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { BillContext } from "../../context/BillContext";
+import FloatingAdvertisement from "../Default/FloatingAdvertisement";
 
 const Login = () => {
   const { fetchBillsAgain } = useContext(BillContext);
+  const [showAd, setShowAd] = useState(true);
 
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
@@ -50,6 +52,8 @@ const Login = () => {
 
   return (
     <div className="container mt-5 d-flex align-items-center justify-content-center">
+      <FloatingAdvertisement show={showAd} onClose={() => setShowAd(false)} adLocation="Login / Signup" />
+
       <div className="row w-100 shadow-lg rounded overflow-hidden">
         {/* Left Section with Image and Overlay */}
         <div className="col-lg-6 p-0">

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { handleInputChange, handlePostSubmit, handleFileChange } from '../../services/Services';
 
 
 function AdvertisementCreate() {
-
+  const navigate = useNavigate();
   const targetAudienceOptions = [
     { id: 1, value: "Store", label: "Store" },
     { id: 2, value: "Retailer", label: "Retailer" },
@@ -26,8 +26,9 @@ function AdvertisementCreate() {
     file: null,
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
     try {
+      e.preventDefault();
       const payload = new FormData();
       for (const key in advertisementData) {
         if (key === 'file' && advertisementData[key]) {
@@ -37,6 +38,7 @@ function AdvertisementCreate() {
         }
       }
       await handlePostSubmit("api/admin/Advertisement", payload, "multipart/form-data", "Advertisement");
+      navigate("/");
     } catch (error) {
       console.error('Error during Appending File:', error);
     }
@@ -51,7 +53,7 @@ function AdvertisementCreate() {
         <h1>New Advertisement</h1>
       </div>
       <div className="card-body bg-secondary p-4">
-        <form onSubmit={handleSubmit} method="post">
+        <form onSubmit={(e)=> handleSubmit(e)} method="post">
           <div
             className="border p-3 mt-4"
             style={{ backgroundColor: 'white', borderRadius: '20px 20px 20px 20px' }}

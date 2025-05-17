@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleGetSubmit } from '../../services/Services';
 import { setProducts } from '../../store/ProductSlice';
+import FloatingAdvertisement from '../Default/FloatingAdvertisement';
 
 function HomeIndex() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [showAd, setShowAd] = useState(true);
+    
     const products = useSelector((state) => state.products.products);
 
     
@@ -25,6 +28,7 @@ function HomeIndex() {
 
     return (
         <div className="container-fluid">
+            <FloatingAdvertisement show={showAd} onClose={() => setShowAd(false)} adLocation="Home" />
           <div className="row pb-3">
             {products && products.map((product) => (
               <div className="col-lg-3 col-sm-6" key={product.id}>
